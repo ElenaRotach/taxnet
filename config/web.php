@@ -7,6 +7,7 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'defaultRoute' => 'organizations/organizations/index',
     'modules' => [
         'organizations' => [
             'class' => 'app\modules\Organizations\Organizations',

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\assets\OrganizationsAsset;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\Organizations\models\OrganizationsSearch */
@@ -9,6 +10,8 @@ use yii\grid\GridView;
 
 $this->title = 'Organizations';
 $this->params['breadcrumbs'][] = $this->title;
+
+OrganizationsAsset::register($this);
 ?>
 <div class="organizations-index">
 
