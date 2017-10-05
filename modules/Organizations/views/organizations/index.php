@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 OrganizationsAsset::register($this);
 ?>
 <div class="organizations-index">
-
+<div id="test"></div>
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -39,3 +39,5 @@ OrganizationsAsset::register($this);
         ],
     ]); ?>
 </div>
+
+<script type="text/babel" src="/js/organizations.jsx"></script>
