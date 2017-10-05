@@ -31,9 +31,11 @@ AppAsset::register($this);
         'brandLabel' => 'test task by TAXNET',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
+            'class' => 'navbar-inverse navbar-fixed-top navBarStyle',
         ],
     ]);
+    ?>
+    <?php
    /* echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [

@@ -5,6 +5,7 @@ namespace app\modules\Organizations\controllers;
 use Yii;
 use app\modules\Organizations\models\Organizations;
 use app\modules\Organizations\models\OrganizationsSearch;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,13 +36,21 @@ class OrganizationsController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new OrganizationsSearch();
+        /*$data = "";
+        if(Yii::$app->request->isGET ) {
+            //$postquery = Yii::$app->request->get();
+            $organizations = Organizations::find()->asArray()->all();
+            $data = Json::encode($organizations);
+        }
+        return $data;*/
+        /*$searchModel = new OrganizationsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
+*/
+        return $this->render('index');/*, [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
+        ]);*/
+
     }
 
     /**
