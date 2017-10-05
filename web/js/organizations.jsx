@@ -1,18 +1,40 @@
 var Menu = React.createClass({
+
+    getTask: function () {
+        ReactDOM.render(
+            <Task/>,
+            document.getElementById('content_data')
+
+        );
+    },
+
+    getAllOrg: function () {
+        document.getElementById('content_data').innerHTML = "";
+    },
+
+    addOrg: function () {
+        ReactDOM.render(
+            <NewOrganization/>,
+            document.getElementById('content_data')
+
+        );
+    },
+
     render:function () {
+
         return(
             <div className="right-menu">
                 <div className="wrap clearfix">
                     <ul>
                         <li className="rm">
-                            <a href="/task/" id="task" title="Прочитать задание">Задание<span className="icon"></span></a>
+                            <a href="#" id="task" title="Прочитать задание" onClick={this.getTask}>Задание<span className="icon"></span></a>
                         </li>
                         <li className="rm">
-                            <a href="/all/" id="all" title="Все организации">Все<span className="icon"></span></a>
+                            <a href="#" id="all" title="Все организации" onClick={this.getAllOrg}>Все<span className="icon"></span></a>
                         </li>
 
                         <li className="rm"  title="Добавить новую организацию">
-                            <a href="/add/" id="add">Добавить<span className="icon"></span></a>
+                            <a href="#" id="add" onClick={this.addOrg}>Добавить<span className="icon"></span></a>
                         </li>
 
                     </ul>
@@ -100,3 +122,74 @@ ReactDOM.render(
     document.getElementById('content_data')
 
 );
+
+var NewOrganization = React.createClass({
+    validateNum: function (event) {
+        var theEvent = event || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode( key );
+        var regex = /d{10}|\d{12}/;
+        if( !regex.test(key) ) {
+            theEvent.returnValue = false;
+            if(theEvent.preventDefault) theEvent.preventDefault();
+        }
+    },
+
+   validateTel:function (event) {
+       var theEvent = event || window.event;
+       var key = theEvent.keyCode || theEvent.which;
+       key = String.fromCharCode( key );
+       var regex = /[0-9]{10}/;
+       if( !regex.test(key) ) {
+           theEvent.returnValue = false;
+           if(theEvent.preventDefault) theEvent.preventDefault();
+       }
+   },
+   render: function () {
+       return(
+            <div className="addOrg col-xs-24">
+                <div className="col-xs-24">
+                    <label className="col-xs-6">Наименование организации:</label>
+                    <input type="text" className="col-xs-18"/>
+                </div>
+                <div className="col-xs-24">
+                    <label className="col-xs-6">Статус</label>
+                    <select  className="col-xs-18">
+                        <option>Юридическое лицо</option>
+                        <option>Индивидуальный предприниматель</option>
+                    </select>
+                </div>
+                <div className="col-xs-24">
+                    <label className="col-xs-6">ИНН</label>
+                    <input type="text" className="col-xs-18" onKeyPress={this.validateNum}/>
+                </div>
+                <div className="col-xs-24">
+                    <label className="col-xs-6">КПП</label>
+                    <input type="text" className="col-xs-18" onKeyPress={this.validateNum}/>
+                </div>
+                <div className="col-xs-24">
+                    <label className="col-xs-6">Контактный номер</label>
+                    <input type="tel" className="col-xs-18" onKeyPress={this.validateTel}/>
+                </div>
+                <div className="col-xs-24">
+                    <label className="col-xs-6">e-mail</label>
+                    <input type="email" className="col-xs-18"/>
+                </div>
+                    <div className="col-xs-24">
+                        <button>Добавить</button>
+                    </div>
+            </div>
+       );
+   }
+});
+
+function validate(evt) {
+    var theEvent = evt || window.event;
+    var key = theEvent.keyCode || theEvent.which;
+    key = String.fromCharCode( key );
+    var regex = /[0-9]|\./;
+    if( !regex.test(key) ) {
+        theEvent.returnValue = false;
+        if(theEvent.preventDefault) theEvent.preventDefault();
+    }
+}

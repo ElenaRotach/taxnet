@@ -7,3 +7,15 @@ body{
     line-height: 20px;
     padding: 0 3px;
 }
+
+.addOrg label{
+    font-weight: bold;
+}
+
+.addOrg{
+    padding: 20px 0 20px 0;
+}
+
+.addOrg input{
+    margin: 5px 0 5px 0;
+}
