@@ -22,7 +22,7 @@ class AppAsset extends AssetBundle
         'css/siteTaxnet.css',
     ];
     public $js = [
-
+        'js/jquery.maskedinput.min.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

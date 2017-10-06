@@ -124,72 +124,247 @@ ReactDOM.render(
 );
 
 var NewOrganization = React.createClass({
-    validateNum: function (event) {
-        var theEvent = event || window.event;
-        var key = theEvent.keyCode || theEvent.which;
-        key = String.fromCharCode( key );
-        var regex = /d{10}|\d{12}/;
-        if( !regex.test(key) ) {
-            theEvent.returnValue = false;
-            if(theEvent.preventDefault) theEvent.preventDefault();
-        }
+
+    componentDidMount: function () {
+        {validMask()}
     },
 
-   validateTel:function (event) {
-       var theEvent = event || window.event;
-       var key = theEvent.keyCode || theEvent.which;
-       key = String.fromCharCode( key );
-       var regex = /[0-9]{10}/;
-       if( !regex.test(key) ) {
-           theEvent.returnValue = false;
-           if(theEvent.preventDefault) theEvent.preventDefault();
-       }
-   },
    render: function () {
+
        return(
-            <div className="addOrg col-xs-24">
-                <div className="col-xs-24">
-                    <label className="col-xs-6">Наименование организации:</label>
-                    <input type="text" className="col-xs-18"/>
-                </div>
-                <div className="col-xs-24">
-                    <label className="col-xs-6">Статус</label>
-                    <select  className="col-xs-18">
-                        <option>Юридическое лицо</option>
-                        <option>Индивидуальный предприниматель</option>
-                    </select>
-                </div>
-                <div className="col-xs-24">
-                    <label className="col-xs-6">ИНН</label>
-                    <input type="text" className="col-xs-18" onKeyPress={this.validateNum}/>
-                </div>
-                <div className="col-xs-24">
-                    <label className="col-xs-6">КПП</label>
-                    <input type="text" className="col-xs-18" onKeyPress={this.validateNum}/>
-                </div>
-                <div className="col-xs-24">
-                    <label className="col-xs-6">Контактный номер</label>
-                    <input type="tel" className="col-xs-18" onKeyPress={this.validateTel}/>
-                </div>
-                <div className="col-xs-24">
-                    <label className="col-xs-6">e-mail</label>
-                    <input type="email" className="col-xs-18"/>
-                </div>
-                    <div className="col-xs-24">
-                        <button>Добавить</button>
-                    </div>
-            </div>
+           <form>
+
+               <label>Тип</label>
+               <select  id="type" onChange={valid}>
+                   <option id="select_0">Юридическое лицо</option>
+                   <option id="select_1">Индивидуальный предприниматель</option>
+               </select>
+               <label>Наименование <span>*</span></label>
+               <input type = "text" id="name"/>
+
+               <label>ИНН <span>*</span></label>
+               <input type = "text" id="inn"/>
+
+               <label>КПП <span>*</span></label>
+               <input type = "text" id="kpp"/>
+
+               <label>Телефон</label>
+               <input type = "text" id="tel"/>
+
+               <label>e-mail</label>
+               <input type = "email" id="mail" className="validate"/>
+
+               <button onClick={save}>Сохранить</button>
+
+
+           </form>
+
        );
    }
 });
+function validMask() {
+    $("#tel").mask("+7 (999) 999-9999");
 
-function validate(evt) {
-    var theEvent = evt || window.event;
-    var key = theEvent.keyCode || theEvent.which;
-    key = String.fromCharCode( key );
-    var regex = /[0-9]|\./;
-    if( !regex.test(key) ) {
-        theEvent.returnValue = false;
-        if(theEvent.preventDefault) theEvent.preventDefault();
+    $("#inn").on('change',function() {
+
+        if($('#type').val()=="Юридическое лицо"){
+            if(event.currentTarget.value.length < 10){
+                $("#inn").css({
+                    "background-color": "rgba(255, 0, 0, 0.2)"
+                });
+            } else{
+                $("#inn").css({
+                    "background-color": "#fff"
+                });
+            }
+        }else {
+            if (event.currentTarget.value.length < 12) {
+                $("#inn").css({
+                    "background-color": "rgba(255, 0, 0, 0.2)"
+                });
+            } else {
+                $("#inn").css({
+                    "background-color": "#fff"
+                });
+            }
+        }
+    });
+
+    $("#kpp").on('change',function() {
+
+        if($('#type').val()=="Юридическое лицо"){
+            if(event.currentTarget.value.length < 9){
+                $("#kpp").css({
+                    "background-color": "rgba(255, 0, 0, 0.2)"
+                });
+            } else{
+                $("#kpp").css({
+                    "background-color": "#fff"
+                });
+            }
+        }else {
+            $("#kpp").css({
+                "background-color": "#fff"
+            });
+
+        }
+    });
+
+    $("#name").on('change',function() {
+        if($("#name").val()==""){
+            $("#name").css({
+                "background-color": "rgba(255, 0, 0, 0.2)"
+            });
+        }else{
+            $("#name").css({
+                "background-color": "#fff"
+            });
+        }
+    });
+
+    if($('#type').val()=="Юридическое лицо"){
+        $("#inn").mask("9999999999");
+        $("#kpp").mask("999999999");
+    }else{
+        $("#inn").mask("999999999999");
+        $("#kpp").mask("0");
     }
+
+        $("#mail").on('input',function() {
+
+            var email = $.trim(this.value), $span = $(this);
+
+            if (email) {
+                if (isValidEmailAddress(email)) {
+                    $span.css({
+                        "background-color": "#fff"
+                    });
+                } else {
+                    $span.css({
+                        "background-color": "rgba(255, 0, 0, 0.2)"
+                    });
+                }
+            } else {
+                $span.css({
+                    "background-color": "#fff"
+                });
+            }
+
+        });
+
+    $("#type").on('change', function () {
+        if(event.currentTarget.value=="Юридическое лицо"){
+            $("#inn").mask("9999999999");
+            $("#kpp").mask("999999999");
+        }else{
+            $("#inn").mask("999999999999");
+            $("#kpp").mask("0");
+            $("#kpp").val("0");
+        }
+    })
+
 }
+function isValidEmailAddress(emailAddress) {
+    var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+    return pattern.test(emailAddress);
+}
+function valid() {
+    if($('#type').val()=="Юридическое лицо"){
+        if($("#inn").val().length < 10){
+            $("#inn").css({
+                "background-color": "rgba(255, 0, 0, 0.2)"
+            });
+        } else{
+            $("#inn").css({
+                "background-color": "#fff"
+            });
+        }
+
+        if($("#kpp").val().length < 9){
+            $("#kpp").css({
+                "background-color": "rgba(255, 0, 0, 0.2)"
+            });
+        } else{
+            $("#kpp").css({
+                "background-color": "#fff"
+            });
+        }
+
+    }else {
+        if ($("#inn").val().length < 12) {
+            $("#inn").css({
+                "background-color": "rgba(255, 0, 0, 0.2)"
+            });
+        } else {
+            $("#inn").css({
+                "background-color": "#fff"
+            });
+        }
+
+        $("#kpp").css({
+            "background-color": "#fff"
+        });
+    }
+
+    if($('#name').val()==""){
+        $("#name").css({
+            "background-color": "rgba(255, 0, 0, 0.2)"
+        });
+    }else{
+        $("#name").css({
+            "background-color": "#fff"
+        });
+    }
+
+}
+
+function save(){
+    valid();
+    var selectedInput = $("input");
+
+    var count = selectedInput.length;
+
+    for(var i=0;i<selectedInput.length;i++){
+        if($(selectedInput[i]).css("background-color") != "rgba(255, 0, 0, 0.2)"){
+            count--;
+        }
+    }
+    if(count==0){
+        alert("сохраняю");
+    }
+
+}
+/*return(
+ <div className="addOrg col-xs-24">
+ <div className="col-xs-24">
+ <label className="col-xs-6">Наименование организации:</label>
+ <input type="text" className="col-xs-18"/>
+ </div>
+ <div className="col-xs-24">
+ <label className="col-xs-6">Статус</label>
+ <select  className="col-xs-18">
+ <option>Юридическое лицо</option>
+ <option>Индивидуальный предприниматель</option>
+ </select>
+ </div>
+ <div className="col-xs-24">
+ <label className="col-xs-6">ИНН</label>
+ <input type="text" className="col-xs-18" onKeyPress={this.validateNum}/>
+ </div>
+ <div className="col-xs-24">
+ <label className="col-xs-6">КПП</label>
+ <input type="text" className="col-xs-18" onKeyPress={this.validateNum}/>
+ </div>
+ <div className="col-xs-24">
+ <label className="col-xs-6">Контактный номер</label>
+ <input type="tel" className="col-xs-18" onKeyPress={this.validateTel}/>
+ </div>
+ <div className="col-xs-24">
+ <label className="col-xs-6">e-mail</label>
+ <input type="email" className="col-xs-18"/>
+ </div>
+ <div className="col-xs-24">
+ <button>Добавить</button>
+ </div>
+ </div>
+ );*/

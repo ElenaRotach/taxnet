@@ -19,3 +19,20 @@ body{
 .addOrg input{
     margin: 5px 0 5px 0;
 }
+
+form{
+    padding: 20px;
+}
+
+form input, form label, form select{
+    margin: 5px;
+    width: 100%;
+}
+form button{
+    margin: 10px;
+    float: right;
+}
+
+form label{
+    font-weight: bold;
+}

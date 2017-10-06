@@ -21,8 +21,8 @@ class OrganizationsAsset extends AssetBundle
         'css/organizations.css',
     ];
     public $js = [
-        'js/react/react.min.js',
-        'js/react/react-dom.min.js',
-        'js/react/babel.js'
+        'js/react/react.js',
+        'js/react/react-dom.js',
+        'js/react/babel.js',
     ];
 }
