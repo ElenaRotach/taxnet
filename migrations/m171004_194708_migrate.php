@@ -15,7 +15,7 @@ class m171004_194708_migrate extends Migration
             'type_id' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
             'inn' => $this->string()->notNull(),
-            'kpp' => $this->string(1)->notNull(),
+            'kpp' => $this->string()->notNull(),
             'fone_number' => $this->string(),
             'e_mail' => $this->string()
         ], $tableOptions);

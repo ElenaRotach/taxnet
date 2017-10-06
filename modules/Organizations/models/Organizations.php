@@ -33,8 +33,7 @@ class Organizations extends \yii\db\ActiveRecord
         return [
             [['name', 'type_id', 'created_at', 'inn', 'kpp'], 'required'],
             [['type_id', 'created_at'], 'integer'],
-            [['name', 'inn', 'fone_number', 'e_mail'], 'string', 'max' => 255],
-            [['kpp'], 'string', 'max' => 1],
+            [['name', 'inn', 'fone_number', 'e_mail', 'kpp'], 'string', 'max' => 255],
         ];
     }
 

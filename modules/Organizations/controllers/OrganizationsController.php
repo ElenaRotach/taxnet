@@ -2,6 +2,7 @@
 
 namespace app\modules\Organizations\controllers;
 
+use function GuzzleHttp\Psr7\str;
 use Yii;
 use app\modules\Organizations\models\Organizations;
 use app\modules\Organizations\models\OrganizationsSearch;
@@ -73,17 +74,49 @@ class OrganizationsController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Organizations();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'inn' => $model->inn, 'kpp' => $model->kpp]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+        $model = new Organizations();
+        $rez = "123";
+        if(Yii::$app->request->isPost){
+            $request = Yii::$app->request->post();
+            $type = 0;
+            if(Yii::$app->request->post()['type']=="Индивидуальный предприниматель"){
+                $type = 1;
+            }
+            if($type==0){
+                if(strlen($request['inn'])!=10 || strlen($request['kpp'])!=9){
+                    return 0;
+                }
+            }else{
+                if(strlen($request['inn'])!=12 || $request['kpp']!=0){
+                    return 0;
+                }
+            }
+
+            $model->name = $request['name'];
+            $model->type_id = $type;
+            $model->created_at = (new \DateTime())->getTimestamp();
+            $model->inn = $request['inn'];
+            $model->kpp = $request['kpp'];
+            $model->fone_number = $request['tel'];
+            $model->e_mail = $request['mail'];
+            //return Json::encode($model);
+            $rez = $model->save();
         }
+
+       return $rez;
     }
 
+    public function actionAll(){
+
+        if(Yii::$app->request->isGet){
+            $request = Yii::$app->request->get();
+            $portion = $request['portion'];
+            $model=Organizations::find()->offset($portion)->limit(10)->all();
+            return Json::encode($model);
+        }
+
+    }
     /**
      * Updates an existing Organizations model.
      * If update is successful, the browser will be redirected to the 'view' page.

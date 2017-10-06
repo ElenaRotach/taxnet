@@ -1,3 +1,10 @@
+var dataOrg = [{'id':'1','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'},
+    {'id':'2','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'},
+    {'id':'3','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'},
+    {'id':'4','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'},
+    {'id':'5','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'},
+    {'id':'6','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'}];
+
 var Menu = React.createClass({
 
     getTask: function () {
@@ -9,7 +16,11 @@ var Menu = React.createClass({
     },
 
     getAllOrg: function () {
-        document.getElementById('content_data').innerHTML = "";
+        ReactDOM.render(
+            <OrganizationList/>,
+            document.getElementById('content_data')
+
+        );
     },
 
     addOrg: function () {
@@ -162,6 +173,165 @@ var NewOrganization = React.createClass({
        );
    }
 });
+
+var Organization = React.createClass({
+
+    render: function () {
+         return(
+             <tr>
+                <td>{this.props.type}</td>
+                <td>{this.props.name}</td>
+                <td>{this.props.inn}</td>
+                <td>{this.props.kpp}</td>
+                <td>{this.props.tel}</td>
+                <td>{this.props.mail}</td>
+             </tr>
+         );
+    }
+});
+/*                {this.state.data.map(function (el) {
+ return <Organization
+ type={el.type}
+ name={el.name}
+ inn={el.inn}
+ kpp={el.kpp}
+ tel={el.tel}
+ mail={el.mail}
+ />;
+ })}*/
+var OrganizationList = React.createClass({
+
+    getInitialState:function () {
+        return {
+            data: '',
+            portion: 0
+        }
+    },
+
+    componentDidMount: function () {
+        {
+            //console.log('portion '+ this.state.portion);
+            $.get('organizations/organizations/all?portion=' + this.state.portion, function(result) {
+                var arr = JSON.parse(result);
+                console.log(result);
+                console.log(arr);
+                if (arr) {
+                    this.setState({
+                        data:arr
+                    });
+                }
+            }.bind(this));
+            this.render();
+            /*var arr;
+            $.ajax({
+                url: ,
+                type: 'GET',
+                data: {
+                    portion: this.state.portion
+                },
+                success: function (data) {
+                    if (data) {
+                        //console.log(data);
+                        arr = JSON.parse(data);
+                        console.log(arr);
+
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function () {
+                    console.log(data);
+                }
+            });
+            this.setState({
+                data:arr
+            });*/
+        }
+    },
+
+    render: function () {
+        console.log(this.state.data);
+        if(Array.isArray(this.state.data)) {
+            return (
+                <table className="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td>
+                            Тип
+                        </td>
+                        <td>
+                            Наименование
+                        </td>
+                        <td>
+                            ИНН
+                        </td>
+                        <td>
+                            КПП
+                        </td>
+                        <td>
+                            Телефон
+                        </td>
+                        <td>
+                            e-mail
+                        </td>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {
+
+                        this.state.data.map(function (el) {
+                                return <Organization
+                                    type={el.type_id}
+                                    name={el.name}
+                                    inn={el.inn}
+                                    kpp={el.kpp}
+                                    tel={el.fone_number}
+                                    mail={el.e_mail}
+                                />;
+                            }
+                        )
+                    }
+
+                    </tbody>
+                </table>
+            );
+        }else{
+            return(
+                <table className="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td>
+                            Тип
+                        </td>
+                        <td>
+                            Наименование
+                        </td>
+                        <td>
+                            ИНН
+                        </td>
+                        <td>
+                            КПП
+                        </td>
+                        <td>
+                            Телефон
+                        </td>
+                        <td>
+                            e-mail
+                        </td>
+                    </tr>
+                    </thead>
+                    <tbody>""</tbody>
+                </table>
+            )
+        }
+    }
+});
+/*{dataOrg.map(function (el) {
+ return <Organization />;
+ )};
+ })}*/
+
 function validMask() {
     $("#tel").mask("+7 (999) 999-9999");
 
@@ -329,10 +499,31 @@ function save(){
             count--;
         }
     }
-    if(count==0){
-        alert("сохраняю");
+    if(count==0) {
+        $.ajax({
+            url: 'organizations/organizations/create',
+            type: 'POST',
+            data: {
+                type: $("#type").val(),
+                name: $("#name").val(),
+                inn: $("#inn").val(),
+                kpp: $("#kpp").val(),
+                tel: $("#tel").val(),
+                mail: $("#mail").val()
+            },
+            success: function (data) {
+                if (data) {
+                    alert("Успешно");
+                    //переход к списку
+                } else {
+                    alert("Ошибка сохранения1");
+                }
+            },
+            error: function () {
+                alert("Ошибка сохранения2");
+            }
+        })
     }
-
 }
 /*return(
  <div className="addOrg col-xs-24">
