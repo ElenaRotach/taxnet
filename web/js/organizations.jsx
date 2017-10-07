@@ -18,9 +18,16 @@ var Menu = React.createClass({
 
     addOrg: function () {
         ReactDOM.render(
-            <NewOrganization/>,
+            <NewOrganization
+                type=""
+                name=""
+                inn=""
+                kpp=""
+                tel=""
+                mail=""
+                actions='new'
+            />,
             document.getElementById('content_data')
-
         );
     },
 
@@ -129,41 +136,92 @@ ReactDOM.render(
 
 var NewOrganization = React.createClass({
 
+    shouldComponentUpdate: function(){
+        $('#content_data').html("");
+        ReactDOM.render(
+            <NewOrganization
+               actions='new'
+            />,
+            document.getElementById('content_data')
+        );
+    },
+
     componentDidMount: function () {
         {validMask()}
+        console.log(this.props.type);
+        if(this.props.type==1){
+            $('#select_0').attr('selected', 'true')
+        }else if(this.props.type==2){
+            $('#select_1').attr('selected', 'true')
+        }
     },
 
    render: function () {
+        console.log(this.props.actions=='run');
+       if(this.props.actions=='run') {
+           return (
 
-       return(
-           <form>
+               <form>
 
-               <label>Тип</label>
-               <select  id="type" onChange={valid}>
-                   <option id="select_0">Юридическое лицо</option>
-                   <option id="select_1">Индивидуальный предприниматель</option>
-               </select>
-               <label>Наименование <span>*</span></label>
-               <input type = "text" id="name" value={this.props.name}/>
+                   <label>Тип</label>
+                   <select id="type" onChange={valid}>
+                       <option id="select_0">Юридическое лицо</option>
+                       <option id="select_1">Индивидуальный предприниматель</option>
+                   </select>
+                   <label>Наименование <span>*</span></label>
+                   <input type="text" id="name" defaultValue={this.props.name}/>
 
-               <label>ИНН <span>*</span></label>
-               <input type = "text" id="inn" value={this.props.inn}/>
+                   <label>ИНН <span>*</span></label>
+                   <input type="text" id="inn" defaultValue={this.props.inn}/>
 
-               <label>КПП <span>*</span></label>
-               <input type = "text" id="kpp" value={this.props.kpp}/>
+                   <label>КПП <span>*</span></label>
+                   <input type="text" id="kpp" defaultValue={this.props.kpp}/>
 
-               <label>Телефон</label>
-               <input type = "text" id="tel"value={this.props.tel}/>
+                   <label>Телефон</label>
+                   <input type="text" id="tel" defaultValue={this.props.tel}/>
 
-               <label>e-mail</label>
-               <input type = "email" id="mail" className="validate" value={this.props.mail}/>
+                   <label>e-mail</label>
+                   <input type="email" id="mail" className="validate" defaultValue={this.props.mail}/>
 
-               <button onClick={save}>Сохранить</button>
+                   <button onClick={save}>Сохранить</button>
 
 
-           </form>
+               </form>
 
-       );
+           );
+       }else{
+
+           return (
+
+               <form>
+
+                   <label>Тип</label>
+                   <select id="type" onChange={valid}>
+                       <option id="select_0">Юридическое лицо</option>
+                       <option id="select_1">Индивидуальный предприниматель</option>
+                   </select>
+                   <label>Наименование <span>*</span></label>
+                   <input type="text" id="name"/>
+
+                   <label>ИНН <span>*</span></label>
+                   <input type="text" id="inn"/>
+
+                   <label>КПП <span>*</span></label>
+                   <input type="text" id="kpp"/>
+
+                   <label>Телефон</label>
+                   <input type="text" id="tel"/>
+
+                   <label>e-mail</label>
+                   <input type="email" id="mail" className="validate"/>
+
+                   <button onClick={save}>Сохранить</button>
+
+
+               </form>
+
+           );
+       }
    }
 });
 
