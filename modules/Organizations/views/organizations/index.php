@@ -29,7 +29,7 @@ OrganizationsAsset::register($this);
 <div class="col-xs-6 right-aside" id ="menu">
 
 </div>
-<div class="data col-xs-18" style="border: 1px solid #008ed0;" id="content_data">
+<div class="data col-xs-18" style="border: 1px solid #008ed0; overflow-x: auto;" id="content_data">
 
 </div>
 <!--</section>-->

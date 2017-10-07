@@ -147,24 +147,258 @@ var NewOrganization = React.createClass({
     },
 
     componentDidMount: function () {
-        {validMask()}
-        console.log(this.props.type);
+
         if(this.props.type==1){
             $('#select_0').attr('selected', 'true')
         }else if(this.props.type==2){
             $('#select_1').attr('selected', 'true')
         }
+        {this.validMask()}
+        {this.valid()}
     },
 
+    validMask: function() {
+        $("#tel").mask("+7 (999) 999-9999");
+        console.log($('#type').val());
+        $("#inn").on('change',function() {
+
+            if($('#type').val()=="Юридическое лицо"){
+                if(event.currentTarget.value.length < 10){
+                    $("#inn").css({
+                        "background-color": "rgba(255, 0, 0, 0.2)"
+                    });
+                } else{
+                    $("#inn").css({
+                        "background-color": "#fff"
+                    });
+                }
+            }else {
+                if (event.currentTarget.value.length < 12) {
+                    $("#inn").css({
+                        "background-color": "rgba(255, 0, 0, 0.2)"
+                    });
+                } else {
+                    $("#inn").css({
+                        "background-color": "#fff"
+                    });
+                }
+            }
+        });
+
+        $("#kpp").on('change',function() {
+
+            if($('#type').val()=="Юридическое лицо"){
+                if(event.currentTarget.value.length < 9){
+                    $("#kpp").css({
+                        "background-color": "rgba(255, 0, 0, 0.2)"
+                    });
+                } else{
+                    $("#kpp").css({
+                        "background-color": "#fff"
+                    });
+                }
+            }else {
+                $("#kpp").css({
+                    "background-color": "#fff"
+                });
+
+            }
+        });
+
+        $("#name").on('change',function() {
+            if($("#name").val()==""){
+                $("#name").css({
+                    "background-color": "rgba(255, 0, 0, 0.2)"
+                });
+            }else{
+                $("#name").css({
+                    "background-color": "#fff"
+                });
+            }
+        });
+        $("#mail").on('input',function() {
+
+            var email = $.trim(this.value), $span = $(this);
+
+            if (email) {
+                if (isValidEmailAddress(email)) {
+                    $span.css({
+                        "background-color": "#fff"
+                    });
+                } else {
+                    $span.css({
+                        "background-color": "rgba(255, 0, 0, 0.2)"
+                    });
+                }
+            } else {
+                $span.css({
+                    "background-color": "#fff"
+                });
+            }
+
+        });
+
+        $("#type").on('change', function () {
+            if(event.currentTarget.value=="Юридическое лицо"){
+                $("#inn").mask("9999999999");
+                $("#kpp").mask("999999999");
+            }else{
+                $("#inn").mask("999999999999");
+                $("#kpp").mask("0");
+                $("#kpp").val("0");
+            }
+        })
+
+        if($('#type').val()=="Юридическое лицо"){
+            $("#inn").mask("9999999999");
+            $("#kpp").mask("999999999");
+        }else{
+            $("#inn").mask("999999999999");
+            $("#kpp").mask("0");
+        }
+
+
+
+    },
+
+
+    valid: function() {
+        if($('#type').val()=="Юридическое лицо"){
+            if(!!!$("#inn").val() && $("#inn").val().length < 10){
+                $("#inn").css({
+                    "background-color": "rgba(255, 0, 0, 0.2)"
+                });
+            } else{
+                $("#inn").css({
+                    "background-color": "#fff"
+                });
+            }
+
+            if($("#kpp").val().length < 9){
+                $("#kpp").css({
+                    "background-color": "rgba(255, 0, 0, 0.2)"
+                });
+            } else{
+                $("#kpp").css({
+                    "background-color": "#fff"
+                });
+            }
+
+        }else {
+            if (!!!($("#inn").val()) && $("#inn").val().length < 12) {
+                $("#inn").css({
+                    "background-color": "rgba(255, 0, 0, 0.2)"
+                });
+            } else {
+                $("#inn").css({
+                    "background-color": "#fff"
+                });
+            }
+
+            $("#kpp").css({
+                "background-color": "#fff"
+            });
+        }
+
+        if($('#name').val()==""){
+            $("#name").css({
+                "background-color": "rgba(255, 0, 0, 0.2)"
+            });
+        }else{
+            $("#name").css({
+                "background-color": "#fff"
+            });
+        }
+
+    },
+
+    add: function(){
+        this.validMask();
+        this.valid();
+        var selectedInput = $("input");
+
+        var count = selectedInput.length;
+
+        for(var i=0;i<selectedInput.length;i++){
+            if($(selectedInput[i]).css("background-color") != "rgba(255, 0, 0, 0.2)"){
+                count--;
+            }
+        }
+        if(count==0) {
+            $.ajax({
+                url: 'organizations/organizations/create',
+                type: 'POST',
+                data: {
+                    type: $("#type").val(),
+                    name: $("#name").val(),
+                    inn: $("#inn").val(),
+                    kpp: $("#kpp").val(),
+                    tel: $("#tel").val(),
+                    mail: $("#mail").val()
+                },
+                success: function (data) {
+                    if (data) {
+                        alert("Успешно");
+                        //переход к списку
+                    } else {
+                        alert("Ошибка сохранения1");
+                    }
+                },
+                error: function () {
+                    alert("Ошибка сохранения2");
+                }
+            })
+        }
+    },
+    update: function(){
+        this.validMask();
+        this.valid();
+        var selectedInput = $("input");
+
+        var count = selectedInput.length;
+
+        for(var i=0;i<selectedInput.length;i++){
+            if($(selectedInput[i]).css("background-color") != "rgba(255, 0, 0, 0.2)"){
+                count--;
+            }
+        }
+        if(count==0) {
+            $.ajax({
+                url: 'organizations/organizations/update',
+                type: 'POST',
+                data: {
+                    inn_old: this.props.inn,
+                    kpp_old: this.props.kpp,
+                    type: $("#type").val(),
+                    name: $("#name").val(),
+                    inn: $("#inn").val(),
+                    kpp: $("#kpp").val(),
+                    tel: $("#tel").val(),
+                    mail: $("#mail").val()
+                },
+                success: function (data) {
+                    if (data) {
+                        alert("Успешно");
+                        //переход к списку
+                    } else {
+                        alert("Ошибка сохранения1");
+                    }
+                },
+                error: function () {
+                    alert("Ошибка сохранения2");
+                }
+            })
+        }
+    },
    render: function () {
-        console.log(this.props.actions=='run');
+
        if(this.props.actions=='run') {
            return (
 
                <form>
 
                    <label>Тип</label>
-                   <select id="type" onChange={valid}>
+                   <select id="type" onChange={this.valid}>
                        <option id="select_0">Юридическое лицо</option>
                        <option id="select_1">Индивидуальный предприниматель</option>
                    </select>
@@ -183,7 +417,8 @@ var NewOrganization = React.createClass({
                    <label>e-mail</label>
                    <input type="email" id="mail" className="validate" defaultValue={this.props.mail}/>
 
-                   <button onClick={save}>Сохранить</button>
+                   <button onClick={this.update}>Сохранить</button>
+                   <button onClick={this.add}>Удалить</button>
 
 
                </form>
@@ -196,7 +431,7 @@ var NewOrganization = React.createClass({
                <form>
 
                    <label>Тип</label>
-                   <select id="type" onChange={valid}>
+                   <select id="type" onChange={this.valid}>
                        <option id="select_0">Юридическое лицо</option>
                        <option id="select_1">Индивидуальный предприниматель</option>
                    </select>
@@ -215,7 +450,7 @@ var NewOrganization = React.createClass({
                    <label>e-mail</label>
                    <input type="email" id="mail" className="validate"/>
 
-                   <button onClick={save}>Сохранить</button>
+                   <button onClick={this.add}>Сохранить</button>
 
 
                </form>
@@ -264,6 +499,8 @@ var Organization = React.createClass({
     },
 
     render: function () {
+        var name = '';
+
          return(
              <tr>
                  <td><a href="#" onClick={this.actions}><i className="fa fa-bars"> </i></a></td>
@@ -313,32 +550,9 @@ var OrganizationList = React.createClass({
                 }
             }.bind(this));
             this.render();
-            /*var arr;
-            $.ajax({
-                url: ,
-                type: 'GET',
-                data: {
-                    portion: this.state.portion
-                },
-                success: function (data) {
-                    if (data) {
-                        //console.log(data);
-                        arr = JSON.parse(data);
-                        console.log(arr);
-
-                    } else {
-                        console.log(data);
-                    }
-                },
-                error: function () {
-                    console.log(data);
-                }
-            });
-            this.setState({
-                data:arr
-            });*/
         }
     },
+
 
     render: function () {
 
@@ -436,237 +650,8 @@ var OrganizationList = React.createClass({
 
                 }
                 );
-
-
-/*{dataOrg.map(function (el) {
- return <Organization />;
- )};
- })}*/
-
-function validMask() {
-    $("#tel").mask("+7 (999) 999-9999");
-
-    $("#inn").on('change',function() {
-
-        if($('#type').val()=="Юридическое лицо"){
-            if(event.currentTarget.value.length < 10){
-                $("#inn").css({
-                    "background-color": "rgba(255, 0, 0, 0.2)"
-                });
-            } else{
-                $("#inn").css({
-                    "background-color": "#fff"
-                });
-            }
-        }else {
-            if (event.currentTarget.value.length < 12) {
-                $("#inn").css({
-                    "background-color": "rgba(255, 0, 0, 0.2)"
-                });
-            } else {
-                $("#inn").css({
-                    "background-color": "#fff"
-                });
-            }
-        }
-    });
-
-    $("#kpp").on('change',function() {
-
-        if($('#type').val()=="Юридическое лицо"){
-            if(event.currentTarget.value.length < 9){
-                $("#kpp").css({
-                    "background-color": "rgba(255, 0, 0, 0.2)"
-                });
-            } else{
-                $("#kpp").css({
-                    "background-color": "#fff"
-                });
-            }
-        }else {
-            $("#kpp").css({
-                "background-color": "#fff"
-            });
-
-        }
-    });
-
-    $("#name").on('change',function() {
-        if($("#name").val()==""){
-            $("#name").css({
-                "background-color": "rgba(255, 0, 0, 0.2)"
-            });
-        }else{
-            $("#name").css({
-                "background-color": "#fff"
-            });
-        }
-    });
-
-    if($('#type').val()=="Юридическое лицо"){
-        $("#inn").mask("9999999999");
-        $("#kpp").mask("999999999");
-    }else{
-        $("#inn").mask("999999999999");
-        $("#kpp").mask("0");
-    }
-
-        $("#mail").on('input',function() {
-
-            var email = $.trim(this.value), $span = $(this);
-
-            if (email) {
-                if (isValidEmailAddress(email)) {
-                    $span.css({
-                        "background-color": "#fff"
-                    });
-                } else {
-                    $span.css({
-                        "background-color": "rgba(255, 0, 0, 0.2)"
-                    });
-                }
-            } else {
-                $span.css({
-                    "background-color": "#fff"
-                });
-            }
-
-        });
-
-    $("#type").on('change', function () {
-        if(event.currentTarget.value=="Юридическое лицо"){
-            $("#inn").mask("9999999999");
-            $("#kpp").mask("999999999");
-        }else{
-            $("#inn").mask("999999999999");
-            $("#kpp").mask("0");
-            $("#kpp").val("0");
-        }
-    })
-
-}
-function isValidEmailAddress(emailAddress) {
+function     isValidEmailAddress(emailAddress) {
     var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
     return pattern.test(emailAddress);
 }
-function valid() {
-    if($('#type').val()=="Юридическое лицо"){
-        if($("#inn").val().length < 10){
-            $("#inn").css({
-                "background-color": "rgba(255, 0, 0, 0.2)"
-            });
-        } else{
-            $("#inn").css({
-                "background-color": "#fff"
-            });
-        }
 
-        if($("#kpp").val().length < 9){
-            $("#kpp").css({
-                "background-color": "rgba(255, 0, 0, 0.2)"
-            });
-        } else{
-            $("#kpp").css({
-                "background-color": "#fff"
-            });
-        }
-
-    }else {
-        if ($("#inn").val().length < 12) {
-            $("#inn").css({
-                "background-color": "rgba(255, 0, 0, 0.2)"
-            });
-        } else {
-            $("#inn").css({
-                "background-color": "#fff"
-            });
-        }
-
-        $("#kpp").css({
-            "background-color": "#fff"
-        });
-    }
-
-    if($('#name').val()==""){
-        $("#name").css({
-            "background-color": "rgba(255, 0, 0, 0.2)"
-        });
-    }else{
-        $("#name").css({
-            "background-color": "#fff"
-        });
-    }
-
-}
-
-function save(){
-    valid();
-    var selectedInput = $("input");
-
-    var count = selectedInput.length;
-
-    for(var i=0;i<selectedInput.length;i++){
-        if($(selectedInput[i]).css("background-color") != "rgba(255, 0, 0, 0.2)"){
-            count--;
-        }
-    }
-    if(count==0) {
-        $.ajax({
-            url: 'organizations/organizations/create',
-            type: 'POST',
-            data: {
-                type: $("#type").val(),
-                name: $("#name").val(),
-                inn: $("#inn").val(),
-                kpp: $("#kpp").val(),
-                tel: $("#tel").val(),
-                mail: $("#mail").val()
-            },
-            success: function (data) {
-                if (data) {
-                    alert("Успешно");
-                    //переход к списку
-                } else {
-                    alert("Ошибка сохранения1");
-                }
-            },
-            error: function () {
-                alert("Ошибка сохранения2");
-            }
-        })
-    }
-}
-/*return(
- <div className="addOrg col-xs-24">
- <div className="col-xs-24">
- <label className="col-xs-6">Наименование организации:</label>
- <input type="text" className="col-xs-18"/>
- </div>
- <div className="col-xs-24">
- <label className="col-xs-6">Статус</label>
- <select  className="col-xs-18">
- <option>Юридическое лицо</option>
- <option>Индивидуальный предприниматель</option>
- </select>
- </div>
- <div className="col-xs-24">
- <label className="col-xs-6">ИНН</label>
- <input type="text" className="col-xs-18" onKeyPress={this.validateNum}/>
- </div>
- <div className="col-xs-24">
- <label className="col-xs-6">КПП</label>
- <input type="text" className="col-xs-18" onKeyPress={this.validateNum}/>
- </div>
- <div className="col-xs-24">
- <label className="col-xs-6">Контактный номер</label>
- <input type="tel" className="col-xs-18" onKeyPress={this.validateTel}/>
- </div>
- <div className="col-xs-24">
- <label className="col-xs-6">e-mail</label>
- <input type="email" className="col-xs-18"/>
- </div>
- <div className="col-xs-24">
- <button>Добавить</button>
- </div>
- </div>
- );*/
