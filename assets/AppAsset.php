@@ -20,6 +20,7 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/site.css',
         'css/siteTaxnet.css',
+        'font/css/font-awesome.min.css'
     ];
     public $js = [
         'js/jquery.maskedinput.min.js'

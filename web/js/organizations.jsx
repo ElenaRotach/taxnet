@@ -144,19 +144,19 @@ var NewOrganization = React.createClass({
                    <option id="select_1">Индивидуальный предприниматель</option>
                </select>
                <label>Наименование <span>*</span></label>
-               <input type = "text" id="name"/>
+               <input type = "text" id="name" value={this.props.name}/>
 
                <label>ИНН <span>*</span></label>
-               <input type = "text" id="inn"/>
+               <input type = "text" id="inn" value={this.props.inn}/>
 
                <label>КПП <span>*</span></label>
-               <input type = "text" id="kpp"/>
+               <input type = "text" id="kpp" value={this.props.kpp}/>
 
                <label>Телефон</label>
-               <input type = "text" id="tel"/>
+               <input type = "text" id="tel"value={this.props.tel}/>
 
                <label>e-mail</label>
-               <input type = "email" id="mail" className="validate"/>
+               <input type = "email" id="mail" className="validate" value={this.props.mail}/>
 
                <button onClick={save}>Сохранить</button>
 
@@ -168,11 +168,48 @@ var NewOrganization = React.createClass({
 });
 
 var Organization = React.createClass({
+    
+    getInitialState: function () {
+        return{
+        type:''}
+    },
+
+    componentDidMount: function(){
+        {
+            $.get('organizations/organizations/types?type=' + this.props.type, function(result) {
+                if (result) {
+                    var rez = JSON.parse(result);
+                    this.setState({
+                        type:rez['short_name']
+                    });
+                }
+            }.bind(this));
+            this.render();
+        }
+    },
+
+    actions: function(){
+        return(
+            ReactDOM.render(
+                <NewOrganization
+                    type={this.props.type}
+                    name={this.props.name}
+                    inn={this.props.inn}
+                    kpp={this.props.kpp}
+                    tel={this.props.tel}
+                    mail={this.props.mail}
+                    actions='run'
+                />,
+                document.getElementById('content_data')
+            )
+        );
+    },
 
     render: function () {
          return(
              <tr>
-                <td>{this.props.type}</td>
+                 <td><a href="#" onClick={this.actions}><i className="fa fa-bars"> </i></a></td>
+                <td>{this.state.type}</td>
                  <td><a href="#">{this.props.name}</a></td>
                 <td>{this.props.inn}</td>
                 <td>{this.props.kpp}</td>
@@ -198,7 +235,8 @@ var OrganizationList = React.createClass({
         return {
             data: '',
             portion: 0,
-            count:0
+            count:0,
+            types: ''
         }
     },
 
@@ -207,9 +245,9 @@ var OrganizationList = React.createClass({
             //console.log('portion '+ this.state.portion);
             $.get('organizations/organizations/all?portion=' + this.state.portion, function(result) {
                 var arr = JSON.parse(result);
-                console.log(result);
-                console.log(arr[1]);
+
                 if (arr[1]) {
+
                     this.setState({
                         data:arr[1],
                         count:arr[0]
@@ -245,7 +283,7 @@ var OrganizationList = React.createClass({
     },
 
     render: function () {
-        console.log(this.state.data);
+
         if(Array.isArray(this.state.data)) {
             return (
                 <div>
@@ -253,6 +291,7 @@ var OrganizationList = React.createClass({
                 <table className="table table-bordered">
                     <thead>
                     <tr>
+                        <td><i className="fa fa-cog"> </i></td>
                         <td>
                             Тип
                         </td>
@@ -278,6 +317,7 @@ var OrganizationList = React.createClass({
                     {
 
                         this.state.data.map(function (el) {
+
                                 return <Organization
                                     type={el.type_id}
                                     name={el.name}
@@ -300,6 +340,7 @@ var OrganizationList = React.createClass({
                     <table className="table table-bordered">
                         <thead>
                             <tr>
+                                <td><i className="fa fa-cog"> </i></td>
                                 <td>
                                     Тип
                                 </td>

@@ -2,10 +2,12 @@
 
 namespace app\modules\Organizations\controllers;
 
+use app\modules\Organizations\models\OrganizationsType;
 use function GuzzleHttp\Psr7\str;
 use Yii;
 use app\modules\Organizations\models\Organizations;
 use app\modules\Organizations\models\OrganizationsSearch;
+use yii\db\Query;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -79,11 +81,11 @@ class OrganizationsController extends Controller
         $rez = "123";
         if(Yii::$app->request->isPost){
             $request = Yii::$app->request->post();
-            $type = 0;
+            $type = 1;
             if(Yii::$app->request->post()['type']=="Индивидуальный предприниматель"){
-                $type = 1;
+                $type = 2;
             }
-            if($type==0){
+            if($type==1){
                 if(strlen($request['inn'])!=10 || strlen($request['kpp'])!=9){
                     return 0;
                 }
@@ -120,6 +122,15 @@ class OrganizationsController extends Controller
             return Json::encode($rez);
         }
 
+    }
+
+    public function actionTypes(){
+        if(Yii::$app->request->isGet) {
+            $request = Yii::$app->request->get();
+            //return $request['type'];
+            $model = OrganizationsType::find()->select('short_name')->where(['id'=>$request['type']])->asArray()->one();
+            return Json::encode($model);
+        }
     }
     /**
      * Updates an existing Organizations model.
