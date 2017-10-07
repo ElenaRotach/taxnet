@@ -1,10 +1,3 @@
-var dataOrg = [{'id':'1','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'},
-    {'id':'2','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'},
-    {'id':'3','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'},
-    {'id':'4','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'},
-    {'id':'5','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'},
-    {'id':'6','type':'ЮЛ', 'name':'testUL', 'inn':'0000000000', 'kpp':'0000000000', 'tel':'+7 (000) 000-0000', 'mail':'test@test.com'}];
-
 var Menu = React.createClass({
 
     getTask: function () {
@@ -180,7 +173,7 @@ var Organization = React.createClass({
          return(
              <tr>
                 <td>{this.props.type}</td>
-                <td>{this.props.name}</td>
+                 <td><a href="#">{this.props.name}</a></td>
                 <td>{this.props.inn}</td>
                 <td>{this.props.kpp}</td>
                 <td>{this.props.tel}</td>
@@ -204,7 +197,8 @@ var OrganizationList = React.createClass({
     getInitialState:function () {
         return {
             data: '',
-            portion: 0
+            portion: 0,
+            count:0
         }
     },
 
@@ -214,10 +208,11 @@ var OrganizationList = React.createClass({
             $.get('organizations/organizations/all?portion=' + this.state.portion, function(result) {
                 var arr = JSON.parse(result);
                 console.log(result);
-                console.log(arr);
-                if (arr) {
+                console.log(arr[1]);
+                if (arr[1]) {
                     this.setState({
-                        data:arr
+                        data:arr[1],
+                        count:arr[0]
                     });
                 }
             }.bind(this));
@@ -253,6 +248,8 @@ var OrganizationList = React.createClass({
         console.log(this.state.data);
         if(Array.isArray(this.state.data)) {
             return (
+                <div>
+                    <Pagination/>
                 <table className="table table-bordered">
                     <thead>
                     <tr>
@@ -294,39 +291,54 @@ var OrganizationList = React.createClass({
                     }
 
                     </tbody>
-                </table>
+                </table></div>
             );
         }else{
             return(
-                <table className="table table-bordered">
-                    <thead>
-                    <tr>
-                        <td>
-                            Тип
-                        </td>
-                        <td>
-                            Наименование
-                        </td>
-                        <td>
-                            ИНН
-                        </td>
-                        <td>
-                            КПП
-                        </td>
-                        <td>
-                            Телефон
-                        </td>
-                        <td>
-                            e-mail
-                        </td>
-                    </tr>
-                    </thead>
-                    <tbody>""</tbody>
-                </table>
+                <div>
+                    <Pagination/>
+                    <table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>
+                                    Тип
+                                </td>
+                                <td>
+                                    Наименование
+                                </td>
+                                <td>
+                                    ИНН
+                                </td>
+                                <td>
+                                    КПП
+                                </td>
+                                <td>
+                                    Телефон
+                                </td>
+                                <td>
+                                    e-mail
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody> </tbody>
+                    </table>
+                    </div>
             )
         }
     }
 });
+                    var Pagination = React.createClass({
+
+                        render: function(){
+                            return(
+                                <div><a>1</a><a>2</a></div>
+                            );
+                        }
+
+                }
+                );
+
+
 /*{dataOrg.map(function (el) {
  return <Organization />;
  )};

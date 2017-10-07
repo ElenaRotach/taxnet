@@ -111,9 +111,13 @@ class OrganizationsController extends Controller
 
         if(Yii::$app->request->isGet){
             $request = Yii::$app->request->get();
+            $count = Organizations::find()->all();
+            $count = ceil(count($count)/10);
             $portion = $request['portion'];
             $model=Organizations::find()->offset($portion)->limit(10)->all();
-            return Json::encode($model);
+            $rez[0] = $count;
+            $rez[1] = $model;
+            return Json::encode($rez);
         }
 
     }
