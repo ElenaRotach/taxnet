@@ -39,29 +39,10 @@ class OrganizationsController extends Controller
      */
     public function actionIndex()
     {
-        /*$data = "";
-        if(Yii::$app->request->isGET ) {
-            //$postquery = Yii::$app->request->get();
-            $organizations = Organizations::find()->asArray()->all();
-            $data = Json::encode($organizations);
-        }
-        return $data;*/
-        /*$searchModel = new OrganizationsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-*/
-        return $this->render('index');/*, [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);*/
-
+        return $this->render('index');
     }
 
-    /**
-     * Displays a single Organizations model.
-     * @param string $inn
-     * @param string $kpp
-     * @return mixed
-     */
+
     public function actionView($inn, $kpp)
     {
         return $this->render('view', [
@@ -69,14 +50,9 @@ class OrganizationsController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new Organizations model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
+
     public function actionCreate()
     {
-
         $model = new Organizations();
         if(Yii::$app->request->isPost){
             $request = Yii::$app->request->post();
@@ -108,8 +84,9 @@ class OrganizationsController extends Controller
        return $rez;
     }
 
-    public function actionAll(){
 
+    public function actionAll()
+    {
         if(Yii::$app->request->isGet){
             $request = Yii::$app->request->get();
             $count = Organizations::find()->all();
@@ -123,6 +100,7 @@ class OrganizationsController extends Controller
 
     }
 
+
     public function actionTypes(){
         if(Yii::$app->request->isGet) {
             $request = Yii::$app->request->get();
@@ -131,16 +109,10 @@ class OrganizationsController extends Controller
             return Json::encode($model);
         }
     }
-    /**
-     * Updates an existing Organizations model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param string $inn
-     * @param string $kpp
-     * @return mixed
-     */
+
+
     public function actionUpdate()
     {
-        //$model = new Organizations();
         if(Yii::$app->request->isPost){
             $request = Yii::$app->request->post();
             $type = 1;
@@ -172,13 +144,7 @@ class OrganizationsController extends Controller
         return $rez;
     }
 
-    /**
-     * Deletes an existing Organizations model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $inn
-     * @param string $kpp
-     * @return mixed
-     */
+
     public function actionDelete()
     {
         if(Yii::$app->request->isPost) {
@@ -189,14 +155,7 @@ class OrganizationsController extends Controller
         }
     }
 
-    /**
-     * Finds the Organizations model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $inn
-     * @param string $kpp
-     * @return Organizations the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     protected function findModel($inn, $kpp)
     {
         if (($model = Organizations::findOne(['inn' => $inn, 'kpp' => $kpp])) !== null) {

@@ -407,8 +407,11 @@ var NewOrganization = React.createClass({
            success: function (data) {
                if (data) {
                    alert("Успешно");
+                   //$('#content_data').html("");
                    ReactDOM.render(
-                       <OrganizationList/>,
+                       <OrganizationList
+                           portion={0}
+                       />,
                        document.getElementById('content_data')
 
                    );
@@ -556,15 +559,7 @@ var OrganizationList = React.createClass({
             types: ''
         }
     },
-    /*shouldComponentUpdate: function(){
-        $('#content_data').html("");
-        ReactDOM.render(
-            <OrganizationList
-                portion={this.props.portion}
-            />,
-            document.getElementById('content_data')
-        );
-    },*/
+
     componentDidMount: function () {
         {
             $.get('organizations/organizations/all?portion=' + this.props.portion, function(result) {
@@ -671,6 +666,7 @@ var OrganizationList = React.createClass({
         }
     }
 });
+
 var Pagination = React.createClass({
 
     prev: function () {
@@ -691,7 +687,7 @@ var Pagination = React.createClass({
     next: function () {
         $('#content_data').html("");
         var nextInd = this.props.num;
-        if(nextInd<this.props.count){
+        if(nextInd<this.props.count-1){
             nextInd++;
         }
         ReactDOM.render(
@@ -706,18 +702,29 @@ var Pagination = React.createClass({
     render: function() {
         var pages = [];
         var num = this.props.num;
+        if(this.props.count-1 - num >= 10) {
+            for (var i = num; ; i++) {
+                if (num < this.props.count && i < 10) {
 
-        for (var i = num; ; i++) {
-            if (num < this.props.count && i < 10) {
+                    pages[i] = num;
+                    num++;
+                } else {
+                    break;
+                }
 
-                pages[i] = num;
-                num++;
-            } else {
-                break;
             }
+        }else{
+            for (var i = 0; ; i++) {
+                if (i < this.props.count) {
 
+                    pages[i] = i;
+                   // num++;
+                } else {
+                    break;
+                }
+
+            }
         }
-
         if (Array.isArray(pages)) {
             return (
                 <ul className="pagin">
@@ -741,8 +748,7 @@ var Pagination = React.createClass({
 
 
 });
-//<a href="#" onClick={next(this.props.portion-1)}>
-//<a href="#" onClick={next(this.props.portion+1)}>
+
 var PgnBtn = React.createClass({
     next: function () {
         $('#content_data').html("");
@@ -761,18 +767,9 @@ var PgnBtn = React.createClass({
         )
     }
 })
+
 function     isValidEmailAddress(emailAddress) {
     var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
     return pattern.test(emailAddress);
 }
 
-/*function next(ind){
-    $('#content_data').html("");
-    ReactDOM.render(
-        <OrganizationList
-            portion={ind}
-        />,
-        document.getElementById('content_data')
-
-    );
-}*/
