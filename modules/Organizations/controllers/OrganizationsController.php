@@ -114,7 +114,7 @@ class OrganizationsController extends Controller
             $request = Yii::$app->request->get();
             $count = Organizations::find()->all();
             $count = ceil(count($count)/10);
-            $portion = $request['portion'];
+            $portion = $request['portion']*10;
             $model=Organizations::find()->offset($portion)->limit(10)->all();
             $rez[0] = $count;
             $rez[1] = $model;
@@ -179,11 +179,14 @@ class OrganizationsController extends Controller
      * @param string $kpp
      * @return mixed
      */
-    public function actionDelete($inn, $kpp)
+    public function actionDelete()
     {
-        $this->findModel($inn, $kpp)->delete();
+        if(Yii::$app->request->isPost) {
+            $request = Yii::$app->request->post();
+            $rez = $this->findModel($request['inn'], $request['kpp'])->delete();
 
-        return $this->redirect(['index']);
+            return $rez;
+        }
     }
 
     /**

@@ -36,3 +36,21 @@ form button{
 form label{
     font-weight: bold;
 }
+
+.pagin {
+    float: right;
+    list-style: none;
+    display: flex;
+    margin-top: 10px;
+    color: #008ed0;
+}
+
+.pagin ul{
+    margin: 10px;
+
+}
+.pagin li{
+    border: 1px #008ed0 solid;
+    padding: 0 5px 0 5px;
+    background-color: #efefef;
+}

@@ -1,6 +1,7 @@
 var Menu = React.createClass({
 
     getTask: function () {
+        $('#content_data').html("");
         ReactDOM.render(
             <Task/>,
             document.getElementById('content_data')
@@ -9,14 +10,18 @@ var Menu = React.createClass({
     },
 
     getAllOrg: function () {
+        $('#content_data').html("");
         ReactDOM.render(
-            <OrganizationList/>,
+            <OrganizationList
+            portion={0}
+            />,
             document.getElementById('content_data')
 
         );
     },
 
     addOrg: function () {
+        $('#content_data').html("");
         ReactDOM.render(
             <NewOrganization
                 type=""
@@ -159,7 +164,6 @@ var NewOrganization = React.createClass({
 
     validMask: function() {
         $("#tel").mask("+7 (999) 999-9999");
-        console.log($('#type').val());
         $("#inn").on('change',function() {
 
             if($('#type').val()=="Юридическое лицо"){
@@ -390,6 +394,33 @@ var NewOrganization = React.createClass({
             })
         }
     },
+
+   delete: function () {
+       $.ajax({
+           url: 'organizations/organizations/delete',
+           type: 'POST',
+           data: {
+               inn: $("#inn").val(),
+               kpp: $("#kpp").val(),
+
+           },
+           success: function (data) {
+               if (data) {
+                   alert("Успешно");
+                   ReactDOM.render(
+                       <OrganizationList/>,
+                       document.getElementById('content_data')
+
+                   );
+               } else {
+                   alert("Ошибка сохранения1");
+               }
+           },
+           error: function () {
+               alert("Ошибка сохранения2");
+           }
+       })
+   },
    render: function () {
 
        if(this.props.actions=='run') {
@@ -418,7 +449,7 @@ var NewOrganization = React.createClass({
                    <input type="email" id="mail" className="validate" defaultValue={this.props.mail}/>
 
                    <button onClick={this.update}>Сохранить</button>
-                   <button onClick={this.add}>Удалить</button>
+                   <button onClick={this.delete}>Удалить</button>
 
 
                </form>
@@ -505,7 +536,7 @@ var Organization = React.createClass({
              <tr>
                  <td><a href="#" onClick={this.actions}><i className="fa fa-bars"> </i></a></td>
                 <td>{this.state.type}</td>
-                 <td><a href="#">{this.props.name}</a></td>
+                 <td>{this.props.name}</td>
                 <td>{this.props.inn}</td>
                 <td>{this.props.kpp}</td>
                 <td>{this.props.tel}</td>
@@ -514,31 +545,29 @@ var Organization = React.createClass({
          );
     }
 });
-/*                {this.state.data.map(function (el) {
- return <Organization
- type={el.type}
- name={el.name}
- inn={el.inn}
- kpp={el.kpp}
- tel={el.tel}
- mail={el.mail}
- />;
- })}*/
+
 var OrganizationList = React.createClass({
 
     getInitialState:function () {
         return {
             data: '',
-            portion: 0,
+            //portion: 0,
             count:0,
             types: ''
         }
     },
-
+    /*shouldComponentUpdate: function(){
+        $('#content_data').html("");
+        ReactDOM.render(
+            <OrganizationList
+                portion={this.props.portion}
+            />,
+            document.getElementById('content_data')
+        );
+    },*/
     componentDidMount: function () {
         {
-            //console.log('portion '+ this.state.portion);
-            $.get('organizations/organizations/all?portion=' + this.state.portion, function(result) {
+            $.get('organizations/organizations/all?portion=' + this.props.portion, function(result) {
                 var arr = JSON.parse(result);
 
                 if (arr[1]) {
@@ -559,7 +588,10 @@ var OrganizationList = React.createClass({
         if(Array.isArray(this.state.data)) {
             return (
                 <div>
-                    <Pagination/>
+                    <Pagination
+                        count= {this.state.count}
+                        num={this.props.portion}
+                    />
                 <table className="table table-bordered">
                     <thead>
                     <tr>
@@ -608,7 +640,6 @@ var OrganizationList = React.createClass({
         }else{
             return(
                 <div>
-                    <Pagination/>
                     <table className="table table-bordered">
                         <thead>
                             <tr>
@@ -640,18 +671,108 @@ var OrganizationList = React.createClass({
         }
     }
 });
-                    var Pagination = React.createClass({
+var Pagination = React.createClass({
 
-                        render: function(){
-                            return(
-                                <div><a>1</a><a>2</a></div>
-                            );
-                        }
+    prev: function () {
+        $('#content_data').html("");
+        var prevInd = this.props.num;
+        if(this.props.num>0){
+            prevInd--;
+        }
+        ReactDOM.render(
+            <OrganizationList
+                portion={prevInd}
+            />,
+            document.getElementById('content_data')
 
-                }
-                );
+        );
+    },
+
+    next: function () {
+        $('#content_data').html("");
+        var nextInd = this.props.num;
+        if(nextInd<this.props.count){
+            nextInd++;
+        }
+        ReactDOM.render(
+            <OrganizationList
+                portion={nextInd}
+            />,
+            document.getElementById('content_data')
+
+        );
+    },
+
+    render: function() {
+        var pages = [];
+        var num = this.props.num;
+
+        for (var i = num; ; i++) {
+            if (num < this.props.count && i < 10) {
+
+                pages[i] = num;
+                num++;
+            } else {
+                break;
+            }
+
+        }
+
+        if (Array.isArray(pages)) {
+            return (
+                <ul className="pagin">
+                    <li> <a href="#" onClick={this.prev} ><i className="fa fa-angle-double-left"> </i></a> </li>
+                    {
+                        pages.map(function (el) {
+                                return <PgnBtn
+                                    next={el}
+                                />;
+                            }
+                        )}
+                    <li><a href="#" onClick={this.next}> <i  className="fa fa-angle-double-right"> </i></a></li>
+                </ul>
+            );
+        }else{
+            return(
+                <ul> </ul>
+            );
+        }
+    }
+
+
+});
+//<a href="#" onClick={next(this.props.portion-1)}>
+//<a href="#" onClick={next(this.props.portion+1)}>
+var PgnBtn = React.createClass({
+    next: function () {
+        $('#content_data').html("");
+        ReactDOM.render(
+            <OrganizationList
+            portion={this.props.next}
+            />,
+            document.getElementById('content_data')
+
+        );
+    },
+    render: function () {
+
+        return(
+            <li><a href="#" onClick={this.next}> {this.props.next+1}</a></li>
+        )
+    }
+})
 function     isValidEmailAddress(emailAddress) {
     var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
     return pattern.test(emailAddress);
 }
 
+/*function next(ind){
+    $('#content_data').html("");
+    ReactDOM.render(
+        <OrganizationList
+            portion={ind}
+        />,
+        document.getElementById('content_data')
+
+    );
+}*/
